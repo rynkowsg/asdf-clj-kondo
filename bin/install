@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+###
+#  Script used to install downloaded package used by 'install' command
+#
+#  Standalone usage:
+
+#    ASDF_INSTALL_VERSION=2023.12.15 ASDF_INSTALL_TYPE=version ASDF_INSTALL_PATH=tmp-installs ASDF_DOWNLOAD_PATH=tmp-downloads ./bin/install
+#
+#  To see debug logs use env var `DEBUG=true`.
+###
+
+set -euo pipefail
+
+CURRENT_SCRIPT_PATH=${BASH_SOURCE[0]}
+PLUGIN_DIR=$(dirname "$(dirname "${CURRENT_SCRIPT_PATH}")")
+
+# shellcheck source=./lib/common.bash
+source "${PLUGIN_DIR}/lib/common.bash" # TOOL_NAME, TOOL_TEST, fail
+# shellcheck source=./lib/log.bash
+source "${PLUGIN_DIR}/lib/log.bash" # log_debug log_info
+
+install_version() {
+  local install_type="$1"
+  local version="$2"
+  local install_path="${3%/bin}/bin"
+
+  if [ "$install_type" != "version" ]; then
+    fail "asdf-${TOOL_NAME} supports release installs only"
+  fi
+
+  (
+    mkdir -p "${install_path}"
+    cp -r "${ASDF_DOWNLOAD_PATH}"/* "${install_path}"
+
+    # test the command is installed
+    local tool_cmd
+    tool_cmd="$(echo "${TOOL_TEST}" | cut -d' ' -f1)" # actually take only the first param
+    test -x "${install_path}/${tool_cmd}" || fail "Expected ${install_path}/${tool_cmd} to be executable."
+    # TODO: consider simplifying it, to just use TOOL_NAME
+
+    log_info "${TOOL_NAME} ${version} installation was successful!"
+  ) || (
+    rm -rf "${install_path}"
+    fail "An error occurred while installing ${TOOL_NAME} ${version}."
+  )
+}
+
+main() {
+  [ -z "${ASDF_INSTALL_TYPE+x}" ] && fail "ASDF_INSTALL_TYPE is required"
+  [ -z "${ASDF_INSTALL_VERSION+x}" ] && fail "ASDF_INSTALL_VERSION is required"
+  [ -z "${ASDF_INSTALL_PATH+x}" ] && fail "ASDF_INSTALL_PATH is required"
+
+  log_debug "ASDF_INSTALL_TYPE: ${ASDF_INSTALL_TYPE}"
+  log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION}"
+  log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH}"
+  log_debug "ASDF_DOWNLOAD_PATH: ${ASDF_DOWNLOAD_PATH}"
+  log_debug "TOOL_NAME: ${TOOL_NAME}"
+  log_debug "TOOL_TEST: ${TOOL_TEST}"
+
+  install_version "${ASDF_INSTALL_TYPE}" "${ASDF_INSTALL_VERSION}" "${ASDF_INSTALL_PATH}"
+}
+
+main "$@"
