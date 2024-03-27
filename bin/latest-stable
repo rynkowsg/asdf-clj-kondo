@@ -13,17 +13,23 @@
 #
 ###
 
+# Bash Strict Mode Settings
 set -euo pipefail
-
-CURRENT_SCRIPT_PATH=${BASH_SOURCE[0]}
-PLUGIN_DIR=$(dirname "$(dirname "${CURRENT_SCRIPT_PATH}")")
-
+# Path Initialization
+if [ -z "${SHELL_GR_DIR:-}" ]; then
+  SCRIPT_PATH_1="${BASH_SOURCE[0]:-$0}"
+  SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
+  SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
+  ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
+  SHELL_GR_DIR="${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@v0.2.2"
+fi
+# Library Sourcing
 # shellcheck source=./lib/common.bash
-source "${PLUGIN_DIR}/lib/common.bash" # GH_REPO
+source "${ROOT_DIR}/lib/common.bash" # GH_REPO
 # shellcheck source=./lib/log.bash
-source "${PLUGIN_DIR}/lib/log.bash" # log_debug_f
+source "${ROOT_DIR}/lib/log.bash" # log_debug_f
 # shellcheck source=./lib/versions.bash
-source "${PLUGIN_DIR}/lib/versions.bash" # list_all_versions sort_versions
+source "${ROOT_DIR}/lib/versions.bash" # list_all_versions sort_versions
 
 latest_stable() {
   local curl_opts=(-sI)
