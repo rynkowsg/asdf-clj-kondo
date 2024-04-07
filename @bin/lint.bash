@@ -26,7 +26,7 @@ main() {
   local error=0
   lint bash \
     < <(
-      find "${ROOT_DIR}" -type f \( -name '*.bash' -o -name '*.sh' \) \
+      find "${ROOT_DIR}" \( -type f \( -name '*.bash' -o -name '*.sh' \) -o -path '*/bin/*' \) \
         | grep -v -E '(.github_deps|/gen/)' \
         | sort
     ) \
