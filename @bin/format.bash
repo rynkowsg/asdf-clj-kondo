@@ -18,10 +18,9 @@ set -euo pipefail
 # Path Initialization
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P || exit 1)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd -P || exit 1)"
+export SHELL_GR_DIR="${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@1cd3a06" # needed for shell-gr to resolve paths
 # Library Sourcing
-SHELL_GR_DIR="${SHELL_GR_DIR:-"${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@8a2c37d"}"
-# shellcheck source=.github_deps/rynkowsg/shell-gr@8a2c37d/lib/tool/format.bash
-source "${SHELL_GR_DIR}/lib/tool/format.bash" # format_with_env
+source "${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/tool/format.bash" # format_with_env
 
 main() {
   local format_cmd_type="${1:-"apply"}"

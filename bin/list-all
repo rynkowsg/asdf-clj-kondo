@@ -20,14 +20,23 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
   SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
   ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
-  SHELL_GR_DIR="${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@8a2c37d"
+  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-# shellcheck source=./lib/common.bash
-source "${ROOT_DIR}/lib/versions.bash" # list_all_versions sort_versions
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__list_all_versions
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/log.bash"               # log_debug
 
+# `bin/list-all` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#binlist-all-
 main() {
-  list_all_versions | sort_versions | xargs echo
+  # inputs validation
+  # none
+
+  # Environment Variables available to script:
+  log_debug "ASDF_INSTALL_TYPE: ${ASDF_INSTALL_TYPE:-}"
+  log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION:-}"
+  log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH:-}"
+
+  GRI_CLJ_KONDO__latest_stable
 }
 
 main "$@"

@@ -20,112 +20,32 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
   SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
   ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
-  SHELL_GR_DIR="${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@8a2c37d"
+  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-# shellcheck source=./lib/common.bash
-source "${ROOT_DIR}/lib/common.bash" # CURL_OPTS, GH_REPO, TOOL_NAME
-# shellcheck source=.github_deps/rynkowsg/shell-gr@8a2c37d/lib/debug.bash
-source "${SHELL_GR_DIR}/lib/debug.bash" # is_debug
-# shellcheck source=.github_deps/rynkowsg/shell-gr@8a2c37d/lib/log.bash
-source "${SHELL_GR_DIR}/lib/log.bash" # log_debug, log_info
-# shellcheck source=.github_deps/rynkowsg/shell-gr@8a2c37d/lib/trap.bash
-source "${SHELL_GR_DIR}/lib/trap.bash" # add_on_exit
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/error.bash"             # fail
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/log.bash"               # log_debug
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__download
 
-linux_id() {
-  # shellcheck disable=SC2002
-  cat /etc/os-release | grep -w ID | cut -d '=' -f 2
-}
-
-compose_download_url() {
-  local version="$1"
-
-  local platform_uname platform
-  platform_uname="$(uname -s)"
-  case "${platform_uname}" in
-    Linux*)
-      if [ "$(linux_id)" == "alpine" ]; then
-        platform="linux-static"
-      else
-        platform="linux"
-      fi
-      ;;
-    Darwin*) platform="macos" ;;
-    *) fail "Platform \"${platform_uname}\" is not yet supported." ;;
-  esac
-
-  local uname_arch arch
-  uname_arch="$(uname -m)"
-  case "${uname_arch}" in
-    x86_64) arch="amd64" ;;
-    *) fail "Architecture \"${uname_arch}\" is not yet supported." ;;
-  esac
-  # possible values:
-  # https://stackoverflow.com/questions/45125516/possible-values-for-uname-m
-
-  # releases: https://github.com/clj-kondo/clj-kondo/releases
-  # sample URL: https://github.com/clj-kondo/clj-kondo/releases/download/v2023.12.15/clj-kondo-2023.12.15-linux-amd64.zip
-  local download_url="${GH_REPO}/releases/download/v${version}/${TOOL_NAME}-${version}-${platform}-${arch}.zip"
-  printf "%s" "${download_url}"
-}
-
-download_release() {
-  local version="$1"
-  local dest="$2"
-
-  # prepare temp directory
-  local temp_dir
-  temp_dir=$(mktemp -d -t "asdf-${TOOL_NAME}.XXXX")
-  add_on_exit rm -rf "${temp_dir}"
-  log_debug "Temporary directory created at ${temp_dir}"
-  log_debug
-
-  # download zip & sha
-  log_info "* Downloading ${TOOL_NAME} release ${version}..."
-  local zip_url sha_url
-  zip_url="$(compose_download_url "${version}")"
-  sha_url="${zip_url}.sha256"
-  log_info " - ${zip_url}"
-  log_info " - ${sha_url}"
-  local temp_zip_path="${temp_dir}/${TOOL_NAME}.zip"
-  local temp_sha_path="${temp_dir}/${TOOL_NAME}.zip.sha256"
-  curl "${CURL_OPTS[@]}" -o "${temp_zip_path}" -C - "${zip_url}" || fail "Could not download ${zip_url}"
-  curl "${CURL_OPTS[@]}" -o "${temp_sha_path}" -C - "${sha_url}" || fail "Could not download ${sha_url}"
-  log_info
-
-  # verify sha
-
-  if command -v sha256sum >/dev/null; then
-    if echo "$(cat "${temp_sha_path}") ${temp_zip_path}" | sha256sum --check >/dev/null 2>&1; then
-      log_info "* Checksum verification successful: The file is intact."
-    else
-      log_info "* Checksum verification failed: The file's integrity is compromised. Try do download ${TOOL_NAME} again."
-      fail "Installation terminated due to integrity check failure."
-    fi
-  else
-    log_info "* Check verification skipped due to missing sha256sum."
-  fi
-  log_info
-
-  # move the downloaded file to final destination
-  mkdir -p "${dest}"
-  local unzip_opts=(-o "${temp_zip_path}" -d "${dest}")
-  ! is_debug && unzip_opts=(-q "${unzip_opts[@]}")
-  unzip "${unzip_opts[@]}" || fail "Could not extract ${temp_zip_path}"
-
-  log_info "* Downloading ${TOOL_NAME} release ${version}... DONE"
-  log_info
-}
-
+# `bin/download` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#bindownload-
 main() {
-  [ -z "${ASDF_DOWNLOAD_PATH+x}" ] && fail "ASDF_DOWNLOAD_PATH is required"
-  [ -z "${ASDF_INSTALL_VERSION+x}" ] && fail "ASDF_INSTALL_VERSION is required"
+  # inputs validation
+  [ -z "${ASDF_DOWNLOAD_PATH:-}" ] && fail "ASDF_DOWNLOAD_PATH is required"
+  [ -z "${ASDF_INSTALL_VERSION:-}" ] && fail "ASDF_INSTALL_VERSION is required"
 
-  log_debug "ASDF_DOWNLOAD_PATH: ${ASDF_DOWNLOAD_PATH}"
-  log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION}"
-  log_debug "TOOL_NAME: ${TOOL_NAME}"
+  # Environment Variables available to script
+  log_debug "ASDF_INSTALL_TYPE: ${ASDF_INSTALL_TYPE:-}"
+  log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION:-}"
+  log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH:-}"
+  log_debug "ASDF_DOWNLOAD_PATH: ${ASDF_DOWNLOAD_PATH:-}"
+  log_debug "GITHUB_API_TOKEN: ${GITHUB_API_TOKEN:+"<masked>"}"
 
-  download_release "${ASDF_INSTALL_VERSION}" "${ASDF_DOWNLOAD_PATH}"
+  GRI_CLJ_KONDO__INSTALL_TYPE="${ASDF_INSTALL_TYPE:-"version"}" \
+    GRI_CLJ_KONDO__INSTALL_VERSION="${ASDF_INSTALL_VERSION}" \
+    GRI_CLJ_KONDO__INSTALL_PATH="${ASDF_INSTALL_PATH%/bin}/bin" \
+    GRI_CLJ_KONDO__DOWNLOAD_PATH="${ASDF_DOWNLOAD_PATH}" \
+    GRI_CLJ_KONDO__GITHUB_API_TOKEN="${GITHUB_API_TOKEN:-}" \
+    GRI_CLJ_KONDO__download
 }
 
 main "$@"

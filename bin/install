@@ -20,53 +20,32 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
   SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
   ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
-  SHELL_GR_DIR="${ROOT_DIR}/.github_deps/rynkowsg/shell-gr@8a2c37d"
+  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-# shellcheck source=./lib/common.bash
-source "${ROOT_DIR}/lib/common.bash" # TOOL_NAME, TOOL_TEST, fail
-# shellcheck source=.github_deps/rynkowsg/shell-gr@8a2c37d/lib/log.bash
-source "${SHELL_GR_DIR}/lib/log.bash" # log_debug, log_info
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/error.bash"             # fail
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__install_downloaded
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/log.bash"               # log_debug
 
-install_version() {
-  local install_type="$1"
-  local version="$2"
-  local install_path="${3%/bin}/bin"
-
-  if [ "$install_type" != "version" ]; then
-    fail "asdf-${TOOL_NAME} supports release installs only"
-  fi
-
-  (
-    mkdir -p "${install_path}"
-    cp -r "${ASDF_DOWNLOAD_PATH}"/* "${install_path}"
-
-    # test the command is installed
-    local tool_cmd
-    tool_cmd="$(echo "${TOOL_TEST}" | cut -d' ' -f1)" # actually take only the first param
-    test -x "${install_path}/${tool_cmd}" || fail "Expected ${install_path}/${tool_cmd} to be executable."
-    # TODO: consider simplifying it, to just use TOOL_NAME
-
-    log_info "${TOOL_NAME} ${version} installation was successful!"
-  ) || (
-    rm -rf "${install_path}"
-    fail "An error occurred while installing ${TOOL_NAME} ${version}."
-  )
-}
-
+# `bin/install` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#bininstall-
 main() {
-  [ -z "${ASDF_INSTALL_TYPE+x}" ] && fail "ASDF_INSTALL_TYPE is required"
-  [ -z "${ASDF_INSTALL_VERSION+x}" ] && fail "ASDF_INSTALL_VERSION is required"
-  [ -z "${ASDF_INSTALL_PATH+x}" ] && fail "ASDF_INSTALL_PATH is required"
+  # inputs validation
+  [ -z "${ASDF_INSTALL_TYPE:-}" ] && fail "ASDF_INSTALL_TYPE is required"
+  [ -z "${ASDF_INSTALL_VERSION:-}" ] && fail "ASDF_INSTALL_VERSION is required"
+  [ -z "${ASDF_INSTALL_PATH:-}" ] && fail "ASDF_INSTALL_PATH is required"
 
-  log_debug "ASDF_INSTALL_TYPE: ${ASDF_INSTALL_TYPE}"
-  log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION}"
-  log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH}"
-  log_debug "ASDF_DOWNLOAD_PATH: ${ASDF_DOWNLOAD_PATH}"
-  log_debug "TOOL_NAME: ${TOOL_NAME}"
-  log_debug "TOOL_TEST: ${TOOL_TEST}"
+  # Environment Variables available to script
+  log_debug "ASDF_INSTALL_TYPE: ${ASDF_INSTALL_TYPE:-}"
+  log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION:-}"
+  log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH:-}"
+  log_debug "ASDF_CONCURRENCY: ${ASDF_CONCURRENCY:-}"
+  log_debug "ASDF_DOWNLOAD_PATH: ${ASDF_DOWNLOAD_PATH:-}"
 
-  install_version "${ASDF_INSTALL_TYPE}" "${ASDF_INSTALL_VERSION}" "${ASDF_INSTALL_PATH}"
+  GRI_CLJ_KONDO__INSTALL_TYPE="${ASDF_INSTALL_TYPE:-"version"}" \
+    GRI_CLJ_KONDO__INSTALL_VERSION="${ASDF_INSTALL_VERSION}" \
+    GRI_CLJ_KONDO__INSTALL_PATH="${ASDF_INSTALL_PATH%/bin}/bin" \
+    GRI_CLJ_KONDO__DOWNLOAD_PATH="${ASDF_DOWNLOAD_PATH}" \
+    GRI_CLJ_KONDO__install_downloaded
 }
 
 main "$@"
