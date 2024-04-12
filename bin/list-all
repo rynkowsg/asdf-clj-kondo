@@ -20,11 +20,11 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
   SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
   ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
-  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383" # needed for shell-gr to resolve paths
+  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e289b2f" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__list_all_versions
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383/lib/log.bash"               # log_debug
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e289b2f/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__list_all_versions
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e289b2f/lib/log.bash"               # log_debug
 
 # `bin/list-all` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#binlist-all-
 main() {
@@ -36,7 +36,7 @@ main() {
   log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION:-}"
   log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH:-}"
 
-  GRI_CLJ_KONDO__latest_stable
+  GRI_CLJ_KONDO__list_all_versions
 }
 
 main "$@"
