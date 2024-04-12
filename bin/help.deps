@@ -2,17 +2,6 @@
 #  Copyright (c) 2024 Greg Rynkowski. All rights reserved.
 #  License: MIT License
 
-###
-#  Script providing 'latest' command.
-#
-#  Standalone usage:
-#
-#    ./bin/latest-stable
-#
-#  To see debug logs use env var `DEBUG=true`.
-#
-###
-
 # Bash Strict Mode Settings
 set -euo pipefail
 # Path Initialization
@@ -24,20 +13,20 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__latest_stable
 source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/log.bash"               # log_debug
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__list_deps
 
-# `bin/latest-stable` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#binlatest-stable-
+# `bin/help.deps` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#binhelpdeps
 main() {
   # inputs validation
   # none
 
-  # Environment Variables available to script:
+  # Environment Variables available to script
   log_debug "ASDF_INSTALL_TYPE: ${ASDF_INSTALL_TYPE:-}"
   log_debug "ASDF_INSTALL_VERSION: ${ASDF_INSTALL_VERSION:-}"
   log_debug "ASDF_INSTALL_PATH: ${ASDF_INSTALL_PATH:-}"
 
-  GRI_CLJ_KONDO__latest_stable
+  GRI_CLJ_KONDO__list_deps
 }
 
 main "$@"
