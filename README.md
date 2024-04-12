@@ -1,16 +1,33 @@
 <div align="center">
 
-# asdf-clj-kondo [![Build](https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml/badge.svg)](https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml) [![Lint](https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml/badge.svg)](https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml)
+# asdf-clj-kondo
+[![GitHub Actions Test Status][ci-actions-test-badge]][ci-actions-test]
+[![GitHub Actions Lint Status][ci-actions-lint-badge]][ci-actions-lint]
+[![CircleCI Lint Status][ci-circleci-lint-badge]][ci-circleci-lint]
+[![License][license-badge]][license]
 
-[clj-kondo](https://github.com/clj-kondo/clj-kondo) plugin for the [asdf version manager](https://asdf-vm.com).
+[ci-actions-test-badge]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml/badge.svg
+[ci-actions-test]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml
+[ci-actions-lint-badge]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml/badge.svg
+[ci-actions-lint]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml
+[ci-circleci-lint-badge]: https://circleci.com/gh/rynkowsg/asdf-clj-kondo.svg?style=shield
+[ci-circleci-lint]: https://circleci.com/gh/rynkowsg/asdf-clj-kondo
+[license-badge]: https://img.shields.io/badge/license-MIT-lightgrey.svg
+[license]: LICENSE
+
+[clj-kondo] plugin for the [asdf version manager][asdf-website].
+
+[asdf-website]: https://asdf-vm.com
+[asdf-repo]: https://github.com/asdf-vm/asdf
+[clj-kondo]: https://github.com/clj-kondo/clj-kondo
 
 </div>
+
 
 ## Contents
 
 - [Dependencies](#dependencies)
 - [Install](#install)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Dependencies
@@ -41,14 +58,8 @@ asdf global clj-kondo latest
 clj-kondo --help
 ```
 
-Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to install & manage versions.
-
-## Contributing
-
-Contributions of any kind welcome! See the [contributing guide](contributing.md).
-
-[Thanks goes to these contributors](https://github.com/rynkowsg/asdf-clj-kondo/graphs/contributors)!
+Check [asdf][asdf-repo] readme for more instructions on how to install & manage versions.
 
 ## License
 
-Licensed under the [MIT license](LICENSE).
+Licensed under the [MIT license][license].
