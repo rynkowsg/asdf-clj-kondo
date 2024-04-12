@@ -20,12 +20,12 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
   SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
   ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
-  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06" # needed for shell-gr to resolve paths
+  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/error.bash"             # fail
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/log.bash"               # log_debug
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1cd3a06/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__download
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383/lib/error.bash"             # fail
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383/lib/log.bash"               # log_debug
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@1a30383/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__download
 
 # `bin/download` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#bindownload-
 main() {

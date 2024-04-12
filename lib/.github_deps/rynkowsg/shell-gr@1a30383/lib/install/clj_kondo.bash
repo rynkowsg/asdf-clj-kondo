@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-#  Copyright (c) 2024 Greg Rynkowski. All rights reserved.
-#  License: MIT License
+# Copyright (c) 2024 Greg Rynkowski. All rights reserved.
+# License: MIT License
 
 # Path Initialization
 if [ -n "${SHELL_GR_DIR:-}" ]; then
@@ -27,16 +27,15 @@ TOOL_NAME="clj-kondo"
 TOOL_TEST="clj-kondo --help"
 
 GRI_CLJ_KONDO__list_deps() {
-  # inputs
-  # none
-
-  local -r deps=(
-    curl # required for downloading
-    unzip # required for extracting
-    sha256sum # required for checksum verification
-  )
+  initial_deps=()
+  initial_deps+=(sort uniq)            # GRI_CLJ_KONDO__list_deps
+  initial_deps+=(curl unzip sha256sum) # GRI_CLJ_KONDO__download
+  initial_deps+=(git grep cut sed)     # GRIC_GH_list_github_tags
+  initial_deps+=(sed sort awk)         # GRIC_GH_sort_versions
+  initial_deps+=(curl sed tail xarg)   # GRIC_GH_latest_stable
+  mapfile -t deps < <(printf "%s\n" "${initial_deps[@]}" | sort | uniq)
   for item in "${deps[@]}"; do
-      printf "%s\n" "${item}"
+    printf "%s\n" "${item}"
   done
 }
 

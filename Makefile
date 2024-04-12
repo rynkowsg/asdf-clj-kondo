@@ -1,8 +1,12 @@
-.PHONY: lint format-check format-apply format-update-patches test
+.PHONY: deps-clean lint format-check format-apply format-update-patches test
 
 SCRIPTS := $(wildcard bin/*)
 deps: $(SCRIPTS)
 	@$(foreach script,$^,echo "Fetching for $(script)"; shellpack fetch $(script);)
+
+deps-clean:
+	rm -rf lib/.github_deps
+	make deps
 
 deps_format: @bin/format.bash
 	shellpack fetch @bin/format.bash
