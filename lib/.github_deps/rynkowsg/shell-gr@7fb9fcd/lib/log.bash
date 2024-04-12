@@ -3,9 +3,9 @@
 #  License: MIT License
 
 # Path Initialization
-if [ -n "${SHELL_GR_DIR}" ]; then
+if [ -n "${SHELL_GR_DIR:-}" ]; then
   _SHELL_GR_DIR="${SHELL_GR_DIR}"
-else
+elif [ -z "${_SHELL_GR_DIR:-}" ]; then
   _SCRIPT_PATH_1="${BASH_SOURCE[0]:-$0}"
   _SCRIPT_PATH="$([[ ! "${_SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${_SCRIPT_PATH_1}" || exit 1)"
   _SCRIPT_DIR="$(cd "$(dirname "${_SCRIPT_PATH}")" && pwd -P || exit 1)"
@@ -16,10 +16,17 @@ fi
 source "${_SHELL_GR_DIR}/lib/color.bash" # NC, RED, YELLOW, is_color
 source "${_SHELL_GR_DIR}/lib/debug.bash" # is_debug
 
+# Expected env vars for log functions:
+# COLOR - to enable/disable colors
+# DEBUG - to enable/disable debug logs
+# PREFIX - log prefix
+
+__LOG_PREFIX="${LOG_PREFIX:-}"
+
 # shellcheck disable=SC2059
 log_error_f() {
   if is_color; then
-    printf "${RED}${1}${NC}" "${@:2}"
+    printf "${RED}${__LOG_PREFIX}${1}${NC}" "${@:2}"
   else
     printf "$@"
   fi
@@ -32,7 +39,7 @@ log_error() {
 # shellcheck disable=SC2059
 log_warning_f() {
   if is_color; then
-    printf "${YELLOW}${1}${NC}" "${@:2}"
+    printf "${YELLOW}${__LOG_PREFIX}${1}${NC}" "${@:2}"
   else
     printf "$@"
   fi
@@ -44,17 +51,17 @@ log_warning() {
 
 log_info_f() {
   # shellcheck disable=SC2059
-  printf "$@"
+  printf "${__LOG_PREFIX}${1}" "${@:2}"
 }
 
 log_info() {
-  log_info_f "%s\n" "$@"
+  log_info_f "${__LOG_PREFIX}%s\n" "$@"
 }
 
 log_debug_f() {
   if is_debug; then
     # shellcheck disable=SC2059
-    printf "$@"
+    printf "${__LOG_PREFIX}${1}" "${@:2}"
   fi
 }
 

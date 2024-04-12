@@ -16,5 +16,5 @@ format-check: deps_format
 format: deps_format
 	\@bin/format.bash apply
 
-lint: deps_format deps_lint
+lint: deps deps_format deps_lint
 	\@bin/lint.bash

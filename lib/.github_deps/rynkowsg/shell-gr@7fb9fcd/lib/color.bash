@@ -13,7 +13,7 @@ COLOR=${COLOR:-1}
 
 is_color() {
   case "${COLOR}" in
-    1|"true") return 0 ;;  # true
-    *) return 1 ;;         # false
+    1 | "true") return 0 ;; # true
+    *) return 1 ;;          # false
   esac
 }
