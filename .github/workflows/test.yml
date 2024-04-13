@@ -9,7 +9,7 @@ on:
 
 jobs:
   plugin_test:
-    name: clj-kondo plugin test
+    name: plugin test
     strategy:
       matrix:
         os:
