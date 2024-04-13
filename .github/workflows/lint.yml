@@ -13,6 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.2 # https://github.com/actions/checkout/releases
       - name: Check workflow files
-        uses: docker://rhysd/actionlint:1.6.26 # https://hub.docker.com/r/rhysd/actionlint/tags
+        uses: docker://rhysd/actionlint:1.6.27 # https://hub.docker.com/r/rhysd/actionlint/tags
         with:
           args: -color
