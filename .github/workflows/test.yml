@@ -13,8 +13,9 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
-          - macos-latest
+          # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
+          - ubuntu-22.04
+          - macos-14
     runs-on: ${{ matrix.os }}
     steps:
       - name: asdf_plugin_test

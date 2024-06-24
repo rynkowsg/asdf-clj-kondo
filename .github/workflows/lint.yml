@@ -9,10 +9,10 @@ on:
 
 jobs:
   actionlint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     steps:
-      - uses: actions/checkout@v4.1.2 # https://github.com/actions/checkout/releases
+      - uses: actions/checkout@v4.1.7 # https://github.com/actions/checkout/releases
       - name: Check workflow files
-        uses: docker://rhysd/actionlint:1.6.27 # https://hub.docker.com/r/rhysd/actionlint/tags
+        uses: docker://rhysd/actionlint:1.7.1 # https://hub.docker.com/r/rhysd/actionlint/tags
         with:
           args: -color
