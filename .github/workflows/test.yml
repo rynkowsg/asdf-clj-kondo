@@ -15,7 +15,8 @@ jobs:
         os:
           # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
           - ubuntu-22.04
-          - macos-14
+          - macos-12 # x86_64
+          - macos-14 # arm64
     runs-on: ${{ matrix.os }}
     steps:
       - name: asdf_plugin_test
