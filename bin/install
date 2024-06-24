@@ -6,8 +6,8 @@
 #  Script used to install downloaded package used by 'install' command
 #
 #  Standalone usage:
-
-#    ASDF_INSTALL_VERSION=2023.12.15 ASDF_INSTALL_TYPE=version ASDF_INSTALL_PATH=tmp-installs ASDF_DOWNLOAD_PATH=tmp-downloads ./bin/install
+#
+#    ASDF_DOWNLOAD_PATH=tmp-downloads ASDF_INSTALL_PATH=tmp-installs ASDF_INSTALL_TYPE=version ASDF_INSTALL_VERSION=2023.12.15 ./bin/install
 #
 #  To see debug logs use env var `DEBUG=true`.
 ###
@@ -20,12 +20,12 @@ if [ -z "${SHELL_GR_DIR:-}" ]; then
   SCRIPT_PATH="$([[ ! "${SCRIPT_PATH_1}" =~ /bash$ ]] && readlink -f "${SCRIPT_PATH_1}" || echo "")"
   SCRIPT_DIR="$([ -n "${SCRIPT_PATH}" ] && (cd "$(dirname "${SCRIPT_PATH}")" && pwd -P) || echo "")"
   ROOT_DIR="$([ -n "${SCRIPT_DIR}" ] && (cd "${SCRIPT_DIR}/.." && pwd -P) || echo "/tmp")"
-  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@a5fad6a" # needed for shell-gr to resolve paths
+  export SHELL_GR_DIR="${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e5a1b73" # needed for shell-gr to resolve paths
 fi
 # Library Sourcing
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@a5fad6a/lib/error.bash"             # fail
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@a5fad6a/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__install_downloaded
-source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@a5fad6a/lib/log.bash"               # log_debug
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e5a1b73/lib/error.bash"             # fail
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e5a1b73/lib/install/clj_kondo.bash" # GRI_CLJ_KONDO__install_downloaded
+source "${ROOT_DIR}/lib/.github_deps/rynkowsg/shell-gr@e5a1b73/lib/log.bash"               # log_debug
 
 # `bin/install` spec: https://github.com/asdf-vm/asdf/blob/master/docs/plugins/create.md#bininstall-
 main() {
@@ -41,10 +41,10 @@ main() {
   log_debug "ASDF_CONCURRENCY: ${ASDF_CONCURRENCY:-}"
   log_debug "ASDF_DOWNLOAD_PATH: ${ASDF_DOWNLOAD_PATH:-}"
 
-  GRI_CLJ_KONDO__INSTALL_TYPE="${ASDF_INSTALL_TYPE:-"version"}" \
-    GRI_CLJ_KONDO__INSTALL_VERSION="${ASDF_INSTALL_VERSION}" \
+  GRI_CLJ_KONDO__DOWNLOAD_PATH="${ASDF_DOWNLOAD_PATH}" \
     GRI_CLJ_KONDO__INSTALL_PATH="${ASDF_INSTALL_PATH%/bin}/bin" \
-    GRI_CLJ_KONDO__DOWNLOAD_PATH="${ASDF_DOWNLOAD_PATH}" \
+    GRI_CLJ_KONDO__INSTALL_TYPE="${ASDF_INSTALL_TYPE:-"version"}" \
+    GRI_CLJ_KONDO__INSTALL_VERSION="${ASDF_INSTALL_VERSION}" \
     GRI_CLJ_KONDO__install_downloaded
 }
 
