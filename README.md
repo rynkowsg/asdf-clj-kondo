@@ -6,20 +6,7 @@
 [![CircleCI Lint Status][ci-circleci-lint-badge]][ci-circleci-lint]
 [![License][license-badge]][license]
 
-[ci-actions-test-badge]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml/badge.svg
-[ci-actions-test]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml
-[ci-actions-lint-badge]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml/badge.svg
-[ci-actions-lint]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml
-[ci-circleci-lint-badge]: https://circleci.com/gh/rynkowsg/asdf-clj-kondo.svg?style=shield
-[ci-circleci-lint]: https://circleci.com/gh/rynkowsg/asdf-clj-kondo
-[license-badge]: https://img.shields.io/badge/license-MIT-lightgrey.svg
-[license]: LICENSE
-
-[clj-kondo] plugin for the [asdf version manager][asdf-website].
-
-[asdf-website]: https://asdf-vm.com
-[asdf-repo]: https://github.com/asdf-vm/asdf
-[clj-kondo]: https://github.com/clj-kondo/clj-kondo
+[asdf version manager][asdf-website] plugin for [clj-kondo][clj-kondo-repo], a Clojure linter.
 
 </div>
 
@@ -63,3 +50,15 @@ Check [asdf][asdf-repo] readme for more instructions on how to install & manage 
 ## License
 
 Licensed under the [MIT license][license].
+
+[asdf-website]: https://asdf-vm.com
+[asdf-repo]: https://github.com/asdf-vm/asdf
+[ci-actions-test-badge]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml/badge.svg
+[ci-actions-test]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/test.yml
+[ci-actions-lint-badge]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml/badge.svg
+[ci-actions-lint]: https://github.com/rynkowsg/asdf-clj-kondo/actions/workflows/lint.yml
+[ci-circleci-lint-badge]: https://circleci.com/gh/rynkowsg/asdf-clj-kondo.svg?style=shield
+[ci-circleci-lint]: https://circleci.com/gh/rynkowsg/asdf-clj-kondo
+[clj-kondo-repo]: https://github.com/clj-kondo/clj-kondo
+[license-badge]: https://img.shields.io/badge/license-MIT-lightgrey.svg
+[license]: LICENSE
