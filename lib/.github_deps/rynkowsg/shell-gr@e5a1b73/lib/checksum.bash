@@ -29,7 +29,7 @@ verify_with_checksum_string_in_file() {
   if ! command -v "${cmd}" >/dev/null; then
     log_info "Check verification skipped due to missing '${cmd}'."
   else
-    if echo "$(cat "${checksum_path}") ${file_path}" | "${cmd}" --check >/dev/null 2>&1; then
+    if echo "$(cat "${checksum_path}")" | "${cmd}" ${file_path} --check >/dev/null 2>&1; then
       log_info "Checksum verification successful: The file is intact."
     else
       log_info "Checksum verification failed: The file's integrity is compromised. Try do download file again."
